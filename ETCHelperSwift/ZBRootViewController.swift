@@ -91,16 +91,28 @@ class ZBRootViewController: UITableViewController, ZBFreewayTableViewControllerD
 		let controller = ZBRoutesTableViewController(style: .Grouped)
 		controller.title = "\(self.from!.name) - \(self.to!.name)"
 		controller.routes = routes
-		self.navigationController?.pushViewController(controller, animated: true)
+		var appDelegate :AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+		appDelegate.splitViewController!.showDetailViewController(UINavigationController(rootViewController: controller), sender: self)
 	}
 
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		tableView.deselectRowAtIndexPath(indexPath, animated: true)
+
+		func presentViewController(vc :UIViewController) {
+			var nav = UINavigationController(rootViewController: vc)
+			nav.preferredContentSize = CGSizeMake(320, 600)
+			nav.modalPresentationStyle = UIModalPresentationStyle.Popover
+			var cell = tableView.cellForRowAtIndexPath(indexPath)
+			nav.popoverPresentationController!.sourceView = cell!
+			nav.popoverPresentationController!.sourceRect = cell!.bounds
+			self.presentViewController(nav, animated: true, completion: nil)
+		}
+
 		switch indexPath.section {
 		case 0:
-			self.navigationController?.pushViewController(fromPicker, animated: true)
+			presentViewController(fromPicker)
 		case 1:
-			self.navigationController?.pushViewController(toPicker, animated: true)
+			presentViewController(toPicker)
 		case 2:
 			self.cal()
 		default:

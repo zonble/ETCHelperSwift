@@ -6,7 +6,8 @@ class ZBRoutesTableViewController :UITableViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+		var backItem = UIBarButtonItem(title: "", style: .Bordered, target: nil, action: nil)
+		self.navigationItem.backBarButtonItem = backItem
 	}
 
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -17,18 +18,30 @@ class ZBRoutesTableViewController :UITableViewController {
 	}
 
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell
+		var cell :UITableViewCell? = tableView.dequeueReusableCellWithIdentifier("Cell") as? UITableViewCell
+		if cell == nil {
+			cell = UITableViewCell(style: .Subtitle, reuseIdentifier: "Cell")
+		}
 		var route = self.routes![indexPath.row]
-		cell.textLabel!.text = "\(route.price)"
-		cell.accessoryType = .DisclosureIndicator
-		return cell
+		cell!.textLabel!.text = "\(route.price)"
+		cell!.detailTextLabel!.text = (route.sections as NSArray).valueForKeyPath("title").componentsJoinedByString("-")
+		cell!.accessoryType = .DisclosureIndicator
+		return cell!
 	}
 
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		var controller = ZBRouteTableViewController(style: .Grouped)
 		var route = self.routes![indexPath.row]
 		controller.route = route
-		controller.title = "\(route.price)"
+		var title = self.title != nil ? self.title! : ""
+		controller.title = "\(title) \(route.price)"
 		self.navigationController?.pushViewController(controller, animated: true)
+	}
+
+	override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+		if routes == nil {
+			return nil
+		}
+		return "\(routes!.count) route(s)"
 	}
 }

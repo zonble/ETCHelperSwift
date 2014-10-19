@@ -141,8 +141,8 @@
 		D4C7A03319F38A3C00FBD0D6 /* ETCHelperLib */ = {
 			isa = PBXGroup;
 			children = (
-				D4C7A03719F38A7B00FBD0D6 /* ZBLink.swift */,
 				D4C7A03A19F38A8900FBD0D6 /* ZBNode.swift */,
+				D4C7A03719F38A7B00FBD0D6 /* ZBLink.swift */,
 				D4C7A03D19F38A9800FBD0D6 /* ZBRoute.swift */,
 				D4C7A04019F38CC500FBD0D6 /* ZBRouteManager.swift */,
 			);

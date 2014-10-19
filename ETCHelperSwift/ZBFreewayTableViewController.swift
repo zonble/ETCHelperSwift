@@ -15,12 +15,18 @@ class ZBFreewayTableViewController :UITableViewController, ZBNodesTableViewContr
 		self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
 		var manager = self.delegate?.routeManagerForFreewaysTableViewController(self)
 		if manager != nil {
-			var freewayNames :[String] = (manager!.freewayNodesMap as NSDictionary).allKeys as [String]
+			var freewayNames = [String]()
+			for freeway in manager!.freewayNodesMap.keys {
+				freewayNames.append(freeway)
+			}
 			freewayNames = freewayNames.sorted {
 				return $0 < $1
 			}
 			self.freewayNames = freewayNames
 		}
+
+		let item = UIBarButtonItem(title: "Close", style: .Plain, target: self, action: Selector("close:"))
+		self.navigationItem.leftBarButtonItem = item
 	}
 
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -45,13 +51,17 @@ class ZBFreewayTableViewController :UITableViewController, ZBNodesTableViewContr
 		let name = self.freewayNames![indexPath.row]
 		let controller = ZBNodesTableViewController(style: .Grouped)
 		controller.delegate = self
-		var nodes = manager!.freewayNodesMap[name]
+		var (nodes, dist) = manager!.freewayNodesMap[name]!
 		controller.nodes = nodes
 		self.navigationController?.pushViewController(controller, animated: true)
 	}
 
+	func close(sender :AnyObject?) {
+		self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion:nil)
+	}
+
 	func nodesTableViewController(controller :ZBNodesTableViewController, didSelectNode node :ZBNode) {
 		self.delegate?.freewayTableViewController(self, didSelectNode: node)
-		self.navigationController?.popViewControllerAnimated(true)
+		self.navigationController?.presentingViewController?.dismissViewControllerAnimated(true, completion:nil)
 	}
 }

@@ -4,6 +4,7 @@ class ZBRoute {
 	var beginNode :ZBNode
 	var links :[ZBLink]
 	var price :Double = 0
+	var holidayDistance :Double = 0
 	var sections = [[String: AnyObject]]()
 
 	init (beginNode: ZBNode, links :[ZBLink]) {
@@ -15,6 +16,7 @@ class ZBRoute {
 		var lastSection :[String: AnyObject]?
 		for link in links {
 			totalPrice += link.price
+			holidayDistance += link.holidayDistance
 			if lastTag == nil || lastTag! != link.tag {
 				if lastSection != nil {
 					self.sections.append(lastSection!)

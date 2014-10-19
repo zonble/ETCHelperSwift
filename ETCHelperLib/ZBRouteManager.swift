@@ -4,7 +4,7 @@ let ZBRouteManagerErrorDomain = "ZBRouteManagerErrorDomain"
 
 class ZBRouteManager {
 	var nodes = [String: ZBNode]()
-	var freewayNodesMap = [String: [ZBNode]]()
+	var freewayNodesMap = [String: ([ZBNode], [Double])]()
 
 	init(routingDataFileURL: NSURL) {
 		var error :NSError?
@@ -26,25 +26,31 @@ class ZBRouteManager {
 				continue
 			}
 			let components = line.componentsSeparatedByString(",") as [String]
-			if components.count != 4 {
+			if components.count != 5 {
 				continue
 			}
 			let tag = components[0]
 			let from :ZBNode = findOrCreateNodeByName(components[1])
 			let to :ZBNode = findOrCreateNodeByName(components[2])
-			makeLinks(a: from, to, (components[3] as NSString).doubleValue, tag)
+			let price = (components[3] as NSString).doubleValue
+			let holidayDistance = (components[4] as NSString).doubleValue
+			makeLinks(a: from, to, price, holidayDistance, tag)
 
-			var freewayNodes :[ZBNode]? = self.freewayNodesMap[tag]
-			if freewayNodes == nil {
-				freewayNodes = [ZBNode]()
+			var freewayNodes :[ZBNode] = [ZBNode]()
+			var freewayDistance :[Double] = [Double]()
+			if (self.freewayNodesMap[tag] != nil) {
+				(freewayNodes, freewayDistance) = self.freewayNodesMap[tag]!
+			} else {
+				freewayDistance.append(0)
 			}
-			if !contains(freewayNodes!, from) {
-				freewayNodes!.append(from)
+			if !contains(freewayNodes, from) {
+				freewayNodes.append(from)
 			}
-			if !contains(freewayNodes!, to) {
-				freewayNodes!.append(to)
+			if !contains(freewayNodes, to) {
+				freewayNodes.append(to)
 			}
-			self.freewayNodesMap[tag] = freewayNodes
+			freewayDistance.append(freewayDistance.last! + holidayDistance)
+			self.freewayNodesMap[tag] = (freewayNodes, freewayDistance)
 		}
 	}
 
