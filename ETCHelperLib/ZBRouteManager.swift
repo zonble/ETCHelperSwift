@@ -37,15 +37,14 @@ class ZBRouteManager {
 			var freewayNodes :[ZBNode]? = self.freewayNodesMap[tag]
 			if freewayNodes == nil {
 				freewayNodes = [ZBNode]()
-				self.freewayNodesMap[tag] = freewayNodes
 			}
-
 			if !contains(freewayNodes!, from) {
-				freewayNodes?.append(from)
+				freewayNodes!.append(from)
 			}
 			if !contains(freewayNodes!, to) {
-				freewayNodes?.append(to)
+				freewayNodes!.append(to)
 			}
+			self.freewayNodesMap[tag] = freewayNodes
 		}
 	}
 
@@ -70,6 +69,46 @@ class ZBRouteManager {
 		if from == to {
 			error.memory = NSError(domain: ZBRouteManagerErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "We do not have the node as the destination."])
 			return []
+		}
+
+		class ZBRouteTraveler {
+			var routes = [ZBRoute]()
+			var visitedNodes = [ZBNode]()
+			var visitedLinks = [ZBLink]()
+			var from :ZBNode
+			var to :ZBNode
+
+			init(from :ZBNode, to :ZBNode) {
+				self.from = from
+				self.to = to
+				visitedNodes.append(from)
+				travelLinksForNode(from)
+			}
+
+			func travelLinksForNode(node :ZBNode) -> Void {
+				for link in node.links {
+					var linkTo = link.to
+					if linkTo == to {
+						var copy = visitedLinks
+						copy.append(link)
+						let route = ZBRoute(beginNode: from, links: copy)
+						routes.append(route)
+						continue
+					}
+					if (visitedNodes as NSArray).containsObject(linkTo) {
+						continue
+					}
+//					if contains(visitedNodes, linkTo) {
+//						continue
+//					}
+					// Swift's "contains" works sooooo slow.
+					visitedLinks.append(link)
+					visitedNodes.append(linkTo)
+					travelLinksForNode(linkTo)
+					visitedLinks.removeLast()
+					visitedNodes.removeLast()
+				}
+			}
 		}
 
 		var traveler = ZBRouteTraveler(from: from, to: to)
@@ -98,41 +137,6 @@ class ZBRouteManager {
 	}
 }
 
-class ZBRouteTraveler {
-	var routes = [ZBRoute]()
-	var visitedNodes = [ZBNode]()
-	var visitedLinks = [ZBLink]()
-	var from :ZBNode
-	var to :ZBNode
 
-	init(from :ZBNode, to :ZBNode) {
-		self.from = from
-		self.to = to
-		visitedNodes.append(from)
-		travelLinksForNode(from)
-	}
-
-	func travelLinksForNode(node :ZBNode) -> Void {
-		for link in node.links {
-			var linkTo = link.to
-			if linkTo == to {
-				var copy = visitedLinks
-				copy.append(link)
-				let route = ZBRoute(beginNode: from, links: copy)
-				routes.append(route)
-				continue
-			}
-			if contains(visitedNodes, linkTo) {
-				continue
-			}
-			visitedLinks.append(link)
-			visitedNodes.append(linkTo)
-			travelLinksForNode(linkTo)
-			visitedLinks.removeLast()
-			visitedNodes.removeLast()
-		}
-	}
-
-}
 
 
