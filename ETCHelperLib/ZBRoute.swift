@@ -23,9 +23,9 @@ class ZBRoute {
 				}
 				lastSection = [String: AnyObject]()
 				lastSection?["title"] = link.tag
-				var links = [ZBLink]()
-				links.append(link)
-				lastSection?["links"] = links
+				var sectionLinks = [ZBLink]()
+				sectionLinks.append(link)
+				lastSection?["links"] = sectionLinks
 			} else {
 				var sectionLinks :[ZBLink] = lastSection!["links"]! as [ZBLink]
 				sectionLinks.append(link)

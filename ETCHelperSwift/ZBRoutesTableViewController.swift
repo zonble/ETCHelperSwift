@@ -24,7 +24,20 @@ class ZBRoutesTableViewController :UITableViewController {
 		}
 		var route = self.routes![indexPath.row]
 		cell!.textLabel!.text = "\(route.price)"
-		cell!.detailTextLabel!.text = (route.sections as NSArray).valueForKeyPath("title").componentsJoinedByString("-")
+
+		func titleFromRoute(route:ZBRoute) -> String {
+			var s :String = route.beginNode.name
+			var sections = route.sections
+			for section in sections {
+				var title = section["title"]! as String
+				var links = section["links"]! as [ZBLink]
+				var link = links.last
+				s += "-\(title)-\(link!.to.name)"
+			}
+			return s
+		}
+
+		cell!.detailTextLabel!.text = titleFromRoute(route)
 		cell!.accessoryType = .DisclosureIndicator
 		return cell!
 	}
