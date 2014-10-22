@@ -27,6 +27,7 @@ class ZBFreewayTableViewController :UITableViewController, ZBNodesTableViewContr
 
 		let item = UIBarButtonItem(title: "Close", style: .Plain, target: self, action: Selector("close:"))
 		self.navigationItem.leftBarButtonItem = item
+		self.tableView.rowHeight = 60;
 	}
 
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -39,7 +40,9 @@ class ZBFreewayTableViewController :UITableViewController, ZBNodesTableViewContr
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell
 		cell.accessoryType = .DisclosureIndicator
-		cell.textLabel.text = self.freewayNames![indexPath.row]
+		let name = self.freewayNames![indexPath.row]
+		cell.textLabel.text = name
+		cell.imageView.image = UIImage(named: name)
 		return cell
 	}
 
