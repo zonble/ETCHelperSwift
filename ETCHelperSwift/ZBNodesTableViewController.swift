@@ -26,7 +26,7 @@ class ZBNodesTableViewController :UITableViewController {
 			cell = UITableViewCell(style: .Value1, reuseIdentifier: "Cell")
 		}
 		var node = nodes![indexPath.row]
-		cell!.textLabel!.text = node.name
+		cell!.textLabel.text = node.name
 		return cell!
 	}
 

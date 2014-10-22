@@ -1,7 +1,6 @@
 import UIKit
 
 class ZBRoutesTableViewController :UITableViewController {
-	var delegate :ZBNodesTableViewControllerDelegate?
 	var routes :[ZBRoute]?
 
 	override func viewDidLoad() {
@@ -23,7 +22,7 @@ class ZBRoutesTableViewController :UITableViewController {
 			cell = UITableViewCell(style: .Subtitle, reuseIdentifier: "Cell")
 		}
 		var route = self.routes![indexPath.row]
-		cell!.textLabel!.text = "\(route.price)"
+		cell!.textLabel.text = "\(route.price)"
 
 		func titleFromRoute(route:ZBRoute) -> String {
 			var s :String = route.beginNode.name

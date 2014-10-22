@@ -45,20 +45,20 @@ class ZBRootViewController: UITableViewController, ZBFreewayTableViewControllerD
 
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell
-		cell.textLabel!.textColor = UIColor.blackColor()
-		cell.textLabel!.textAlignment = .Left
+		cell.textLabel.textColor = UIColor.blackColor()
+		cell.textLabel.textAlignment = .Left
 		switch indexPath.section {
 		case 0:
-			cell.textLabel!.text = self.from != nil ? self.from!.name : "Not Set Yet"
+			cell.textLabel.text = self.from != nil ? self.from!.name : "Not Set Yet"
 			cell.accessoryType = .DisclosureIndicator
 		case 1:
-			cell.textLabel!.text = self.to != nil ? self.to!.name : "Not Set Yet"
+			cell.textLabel.text = self.to != nil ? self.to!.name : "Not Set Yet"
 			cell.accessoryType = .DisclosureIndicator
 		case 2:
-			cell.textLabel!.text = "Go!"
+			cell.textLabel.text = "Go!"
 			cell.accessoryType = .None
-			cell.textLabel!.textColor = UIColor.blueColor()
-			cell.textLabel!.textAlignment = .Center
+			cell.textLabel.textColor = UIColor.blueColor()
+			cell.textLabel.textAlignment = .Center
 		default:
 			break
 		}

@@ -8,10 +8,14 @@ class ZBRouteManager {
 
 	init(routingDataFileURL: NSURL) {
 		var error :NSError?
-		let text = NSString(contentsOfURL: routingDataFileURL, encoding: NSUTF8StringEncoding, error: &error)
+		let text: NSString? = NSString(contentsOfURL: routingDataFileURL, encoding: NSUTF8StringEncoding, error: &error)
 		if error != nil {
 			return
 		}
+		if text == nil {
+			return
+		}
+		let contents = text!
 
 		func findOrCreateNodeByName(name :String) -> ZBNode {
 			if self.nodes[name] == nil {
@@ -20,21 +24,25 @@ class ZBRouteManager {
 			return self.nodes[name]!
 		}
 
-		let lines = text.componentsSeparatedByString("\n")
+		let lines = contents.componentsSeparatedByString("\n")
 		for line in lines {
-			if line.hasPrefix("#") {
+			if !line.hasPrefix("|") || line.hasPrefix("|--") || line.hasPrefix("| #"){
 				continue
 			}
-			let components = line.componentsSeparatedByString(",") as [String]
-			if components.count != 5 {
+			let textComponents = line.componentsSeparatedByString("|") as [String]
+			var components = map(textComponents, {($0 as NSString).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())})
+			components = components.filter({($0 as NSString).length > 0})
+			if components.count != 6 {
 				continue
 			}
+
 			let tag = components[0]
 			let from :ZBNode = findOrCreateNodeByName(components[1])
 			let to :ZBNode = findOrCreateNodeByName(components[2])
-			let price = (components[3] as NSString).doubleValue
-			let holidayDistance = (components[4] as NSString).doubleValue
-			makeLinks(a: from, to, price, holidayDistance, tag)
+			let distance = (components[3] as NSString).doubleValue
+			let price = (components[4] as NSString).doubleValue
+			let holidayDistance = (components[5] as NSString).doubleValue
+			makeLinks(a: from, to, distance, price, holidayDistance, tag)
 
 			var freewayNodes :[ZBNode] = [ZBNode]()
 			var freewayDistance :[Double] = [Double]()

@@ -39,7 +39,7 @@ class ZBFreewayTableViewController :UITableViewController, ZBNodesTableViewContr
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell
 		cell.accessoryType = .DisclosureIndicator
-		cell.textLabel!.text = self.freewayNames![indexPath.row]
+		cell.textLabel.text = self.freewayNames![indexPath.row]
 		return cell
 	}
 

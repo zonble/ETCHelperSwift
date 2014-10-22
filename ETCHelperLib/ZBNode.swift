@@ -17,15 +17,15 @@ class ZBNode: Hashable {
 		return self.name.hashValue
 	}
 
-	func makeLink(#to: ZBNode, price :Double, holidayDistance :Double, tag :String) {
-		let link = ZBLink(to: to, price: price, holidayDistance: holidayDistance, tag: tag)
+	func makeLink(#to: ZBNode, distance :Double, price :Double, holidayDistance :Double, tag :String) {
+		let link = ZBLink(to: to, distance: distance, price: price, holidayDistance: holidayDistance, tag: tag)
 		self.links.append(link)
 	}
 }
 
-func makeLinks(#a: ZBNode, b: ZBNode, price: Double, holidayDistance :Double, tag: NSString) {
-	a.makeLink(to: b, price: price, holidayDistance: holidayDistance, tag: tag)
-	b.makeLink(to: a, price: price, holidayDistance: holidayDistance, tag: tag)
+func makeLinks(#a: ZBNode, b: ZBNode, distance :Double, price: Double, holidayDistance :Double, tag: NSString) {
+	a.makeLink(to: b, distance: distance, price: price, holidayDistance: holidayDistance, tag: tag)
+	b.makeLink(to: a, distance: distance, price: price, holidayDistance: holidayDistance, tag: tag)
 }
 
 func ==(lhs: ZBNode, rhs: ZBNode) -> Bool {

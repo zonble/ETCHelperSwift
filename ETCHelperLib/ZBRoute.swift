@@ -3,6 +3,7 @@ import Foundation
 class ZBRoute {
 	var beginNode :ZBNode
 	var links :[ZBLink]
+	var distance :Double = 0
 	var price :Double = 0
 	var holidayDistance :Double = 0
 	var sections = [[String: AnyObject]]()
@@ -11,11 +12,11 @@ class ZBRoute {
 		self.beginNode = beginNode
 		self.links = links
 
-		var totalPrice :Double = 0
 		var lastTag :NSString?
 		var lastSection :[String: AnyObject]?
 		for link in links {
-			totalPrice += link.price
+			distance += link.distance
+			price += link.price
 			holidayDistance += link.holidayDistance
 			if lastTag == nil || lastTag! != link.tag {
 				if lastSection != nil {
@@ -34,7 +35,6 @@ class ZBRoute {
 			lastTag = link.tag
 		}
 		self.sections.append(lastSection!)
-		self.price = totalPrice
 	}
 
 	var description: String {

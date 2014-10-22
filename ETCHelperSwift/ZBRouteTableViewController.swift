@@ -1,14 +1,47 @@
 import UIKit
 
+enum CellTypes {
+	case Distance, Price
+	case LongDistanceDiscount, DailyDiscount, LongDistanceAndDailyDiscount
+	case HolidayDiscount
+}
+
 class ZBRouteTableViewController :UITableViewController {
-	var delegate :ZBNodesTableViewControllerDelegate?
-	var route :ZBRoute?
+	var longDistanceDiscountPrice :Double = 0
+	var discountPrice :Double = 0
+	var cellTypes = [CellTypes]()
+	var route :ZBRoute? {
+		didSet {
+			self.cellTypes = [CellTypes]()
+			self.longDistanceDiscountPrice = 0
+			self.discountPrice = 0
+			cellTypes.append(.Price)
+			cellTypes.append(.Distance)
+			let distance = route!.distance
+			if distance > 200 {
+				cellTypes.append(.LongDistanceDiscount)
+				cellTypes.append(.LongDistanceAndDailyDiscount)
+				self.longDistanceDiscountPrice = 200 * 1.2 + (distance - 200) * 0.9
+				self.discountPrice = self.longDistanceDiscountPrice - 20 * 1.2;
+			} else if distance > 20 {
+				cellTypes.append(.DailyDiscount)
+				self.discountPrice = (distance - 20) * 1.2
+			} else {
+				cellTypes.append(.DailyDiscount)
+			}
+			cellTypes.append(.HolidayDiscount)
+		}
+	}
+
 	var currencyFormatter = NSNumberFormatter()
+	var distanceFormatter = NSLengthFormatter()
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		currencyFormatter.numberStyle = .CurrencyStyle
-		currencyFormatter.locale = NSLocale(localeIdentifier: "zh_Hant_TW")
+		let taiwanLocale = NSLocale(localeIdentifier: "zh_Hant_TW");
+		currencyFormatter.locale = taiwanLocale
+		distanceFormatter.numberFormatter.locale = taiwanLocale
 	}
 
 	override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -23,7 +56,7 @@ class ZBRouteTableViewController :UITableViewController {
 			return 0
 		}
 		if section == 0 {
-			return 3
+			return self.cellTypes.count
 		}
 		let linkSection = self.route!.sections[section-1]
 		let links = linkSection["links"]! as [ZBLink]
@@ -36,17 +69,34 @@ class ZBRouteTableViewController :UITableViewController {
 			cell = UITableViewCell(style: .Value1, reuseIdentifier: "Cell")
 		}
 
+		cell?.textLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody);
+
 		cell!.selectionStyle = .None
 		if indexPath.section == 0 {
-			switch indexPath.row {
-			case 0:
-				cell!.textLabel!.text = "牌價"
+			let type = self.cellTypes[indexPath.row]
+			switch type {
+			case .Distance:
+				cell!.textLabel.text = "里程"
+				var str = self.distanceFormatter.stringFromMeters(route!.distance * 1000)
+				cell!.detailTextLabel!.text = str
+			case .Price:
+				cell!.textLabel.text = "牌價"
 				cell!.detailTextLabel!.text = currencyFormatter.stringFromNumber(self.route!.price)
-			case 1:
-				cell!.textLabel!.text = "國慶日連續假期里程"
-				cell!.detailTextLabel!.text = "\(route!.holidayDistance) km"
-			case 2:
-				cell!.textLabel!.text = "國慶日連續假期收費"
+			case .LongDistanceDiscount:
+				cell!.indentationLevel = 1
+				cell!.textLabel.text = "扣除長途優惠後"
+				cell!.detailTextLabel!.text = currencyFormatter.stringFromNumber(self.longDistanceDiscountPrice)
+			case .LongDistanceAndDailyDiscount:
+				cell!.indentationLevel = 1
+				cell!.textLabel.text = "扣除優惠里程與長途優惠後"
+				cell!.detailTextLabel!.text = currencyFormatter.stringFromNumber(self.discountPrice)
+			case .DailyDiscount:
+				cell!.indentationLevel = 1
+				cell!.textLabel.text = "扣除優惠里程後"
+				cell!.detailTextLabel!.text = currencyFormatter.stringFromNumber(self.discountPrice)
+			case .HolidayDiscount:
+				cell!.indentationLevel = 1
+				cell!.textLabel.text = "國慶假期收費 (里程x0.9)"
 				var holidayPrice = self.route!.holidayDistance * 0.9
 				cell!.detailTextLabel!.text = currencyFormatter.stringFromNumber(holidayPrice)
 			default:
@@ -72,7 +122,7 @@ class ZBRouteTableViewController :UITableViewController {
 			previousNode = links[indexPath.row-1].to
 		}
 
-		cell!.textLabel!.text = "\(previousNode.name) - \(link.to.name)"
+		cell!.textLabel.text = "\(previousNode.name) - \(link.to.name)"
 		cell!.detailTextLabel!.text = currencyFormatter.stringFromNumber(link.price)
 		return cell!
 	}
