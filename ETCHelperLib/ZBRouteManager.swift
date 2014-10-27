@@ -87,15 +87,19 @@ class ZBRouteManager {
 
 		class ZBRouteTraveler {
 			var routes = [ZBRoute]()
-			var visitedNodes = [ZBNode]()
-			var visitedLinks = [ZBLink]()
+//			var visitedNodes = [ZBNode]()
+//			var visitedLinks = [ZBLink]()
+			var visitedNodes = NSMutableArray()
+			var visitedLinks = NSMutableArray()
+
 			var from :ZBNode
 			var to :ZBNode
 
 			init(from :ZBNode, to :ZBNode) {
 				self.from = from
 				self.to = to
-				visitedNodes.append(from)
+//				visitedNodes.append(from)
+				visitedNodes.addObject(from)
 				travelLinksForNode(from)
 			}
 
@@ -103,9 +107,12 @@ class ZBRouteManager {
 				for link in node.links {
 					var linkTo = link.to
 					if linkTo == to {
-						var copy = visitedLinks
-						copy.append(link)
-						let route = ZBRoute(beginNode: from, links: copy)
+//						var copy = visitedLinks
+						var copy = NSMutableArray(array: visitedLinks)
+//						copy.append(link)
+						copy.addObject(link)
+//						let route = ZBRoute(beginNode: from, links: copy)
+						let route = ZBRoute(beginNode: from, links: copy as [AnyObject] as [ZBLink])
 						routes.append(route)
 						continue
 					}
@@ -115,12 +122,17 @@ class ZBRouteManager {
 //					if contains(visitedNodes, linkTo) {
 //						continue
 //					}
+
 					// Swift's "contains" works sooooo slow.
-					visitedLinks.append(link)
-					visitedNodes.append(linkTo)
+//					visitedLinks.append(link)
+//					visitedNodes.append(linkTo)
+					visitedLinks.addObject(link)
+					visitedNodes.addObject(linkTo)
 					travelLinksForNode(linkTo)
-					visitedLinks.removeLast()
-					visitedNodes.removeLast()
+//					visitedLinks.removeLast()
+//					visitedNodes.removeLast()
+					visitedLinks.removeLastObject()
+					visitedNodes.removeLastObject()
 				}
 			}
 		}

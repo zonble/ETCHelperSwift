@@ -7,25 +7,16 @@ enum CellTypes {
 }
 
 class ZBRouteTableViewController :UITableViewController {
-	var longDistanceDiscountPrice :Double = 0
-	var discountPrice :Double = 0
 	var cellTypes = [CellTypes]()
 	var route :ZBRoute? {
 		didSet {
 			self.cellTypes = [CellTypes]()
-			self.longDistanceDiscountPrice = 0
-			self.discountPrice = 0
 			cellTypes.append(.Price)
 			cellTypes.append(.Distance)
 			let distance = route!.distance
 			if distance > 200 {
 				cellTypes.append(.LongDistanceDiscount)
 				cellTypes.append(.LongDistanceAndDailyDiscount)
-				self.longDistanceDiscountPrice = 200 * 1.2 + (distance - 200) * 0.9
-				self.discountPrice = self.longDistanceDiscountPrice - 20 * 1.2;
-			} else if distance > 20 {
-				cellTypes.append(.DailyDiscount)
-				self.discountPrice = (distance - 20) * 1.2
 			} else {
 				cellTypes.append(.DailyDiscount)
 			}
@@ -42,6 +33,9 @@ class ZBRouteTableViewController :UITableViewController {
 		let taiwanLocale = NSLocale(localeIdentifier: "zh_Hant_TW");
 		currencyFormatter.locale = taiwanLocale
 		distanceFormatter.numberFormatter.locale = taiwanLocale
+
+		let item = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: Selector("share:"))
+		self.navigationItem.rightBarButtonItem = item
 	}
 
 	override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -70,6 +64,7 @@ class ZBRouteTableViewController :UITableViewController {
 		}
 
 		cell?.textLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody);
+		cell!.indentationLevel = 0
 
 		cell!.selectionStyle = .None
 		if indexPath.section == 0 {
@@ -84,21 +79,20 @@ class ZBRouteTableViewController :UITableViewController {
 				cell!.detailTextLabel!.text = currencyFormatter.stringFromNumber(self.route!.price)
 			case .LongDistanceDiscount:
 				cell!.indentationLevel = 1
-				cell!.textLabel.text = "扣除長途優惠後"
-				cell!.detailTextLabel!.text = currencyFormatter.stringFromNumber(self.longDistanceDiscountPrice)
+				cell!.textLabel.text = "扣長途優惠後"
+				cell!.detailTextLabel!.text = currencyFormatter.stringFromNumber(self.route!.priceAfterLongDistanceDiscount)
 			case .LongDistanceAndDailyDiscount:
 				cell!.indentationLevel = 1
-				cell!.textLabel.text = "扣除優惠里程與長途優惠後"
-				cell!.detailTextLabel!.text = currencyFormatter.stringFromNumber(self.discountPrice)
+				cell!.textLabel.text = "扣優惠里程與長途優惠後"
+				cell!.detailTextLabel!.text = currencyFormatter.stringFromNumber(self.route!.priceAfterLongDistanceAndDailyDiscount)
 			case .DailyDiscount:
 				cell!.indentationLevel = 1
-				cell!.textLabel.text = "扣除優惠里程後"
-				cell!.detailTextLabel!.text = currencyFormatter.stringFromNumber(self.discountPrice)
+				cell!.textLabel.text = "扣優惠里程後"
+				cell!.detailTextLabel!.text = currencyFormatter.stringFromNumber(self.route!.priceAfterDailyDiscount)
 			case .HolidayDiscount:
 				cell!.indentationLevel = 1
 				cell!.textLabel.text = "國慶假期收費 (里程x0.9)"
-				var holidayPrice = self.route!.holidayDistance * 0.9
-				cell!.detailTextLabel!.text = currencyFormatter.stringFromNumber(holidayPrice)
+				cell!.detailTextLabel!.text = currencyFormatter.stringFromNumber(self.route!.priceAfterHolidayDiscount)
 			default:
 				break
 			}
@@ -135,4 +129,14 @@ class ZBRouteTableViewController :UITableViewController {
 		let title = linkSection["title"]! as NSString
 		return title
 	}
+
+	func share(sender: AnyObject) {
+		if self.route == nil {
+			return
+		}
+		let report = self.route!.plainTextReport
+		let vc = UIActivityViewController(activityItems: [report], applicationActivities: nil)
+		self.presentViewController(vc, animated: true, completion: nil)
+	}
 }
+

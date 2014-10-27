@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D438163619F81BF400B6CCD3 /* ZBRoute+Report.swift in Sources */ = {isa = PBXBuildFile; fileRef = D438163519F81BF400B6CCD3 /* ZBRoute+Report.swift */; };
 		D4C7A01419F38A2400FBD0D6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C7A01319F38A2400FBD0D6 /* AppDelegate.swift */; };
 		D4C7A01B19F38A2400FBD0D6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4C7A01A19F38A2400FBD0D6 /* Images.xcassets */; };
 		D4C7A01E19F38A2400FBD0D6 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4C7A01C19F38A2400FBD0D6 /* LaunchScreen.xib */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D438163519F81BF400B6CCD3 /* ZBRoute+Report.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ZBRoute+Report.swift"; sourceTree = "<group>"; };
 		D4C7A00E19F38A2400FBD0D6 /* ETCHelperSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ETCHelperSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4C7A01219F38A2400FBD0D6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D4C7A01319F38A2400FBD0D6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 				D4C7A03A19F38A8900FBD0D6 /* ZBNode.swift */,
 				D4C7A03719F38A7B00FBD0D6 /* ZBLink.swift */,
 				D4C7A03D19F38A9800FBD0D6 /* ZBRoute.swift */,
+				D438163519F81BF400B6CCD3 /* ZBRoute+Report.swift */,
 				D4C7A04019F38CC500FBD0D6 /* ZBRouteManager.swift */,
 			);
 			path = ETCHelperLib;
@@ -253,6 +256,7 @@
 				D4EB467819F3C3B200F2E4EE /* ZBRouteTableViewController.swift in Sources */,
 				D4EB467619F3BD4A00F2E4EE /* ZBRoutesTableViewController.swift in Sources */,
 				D4C7A03E19F38A9800FBD0D6 /* ZBRoute.swift in Sources */,
+				D438163619F81BF400B6CCD3 /* ZBRoute+Report.swift in Sources */,
 				D4C7A03B19F38A8900FBD0D6 /* ZBNode.swift in Sources */,
 				D4C7A01419F38A2400FBD0D6 /* AppDelegate.swift in Sources */,
 				D4F1825E19F3AC0E00B67F12 /* ZBFreewayTableViewController.swift in Sources */,
@@ -379,6 +383,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = ETCHelperSwift/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -389,6 +394,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = ETCHelperSwift/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

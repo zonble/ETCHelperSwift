@@ -5,6 +5,10 @@ class ZBRoute {
 	var links :[ZBLink]
 	var distance :Double = 0
 	var price :Double = 0
+	var priceAfterDailyDiscount :Double = 0
+	var priceAfterLongDistanceDiscount :Double = 0
+	var priceAfterLongDistanceAndDailyDiscount :Double = 0
+	var priceAfterHolidayDiscount :Double = 0
 	var holidayDistance :Double = 0
 	var sections = [[String: AnyObject]]()
 
@@ -35,6 +39,15 @@ class ZBRoute {
 			lastTag = link.tag
 		}
 		self.sections.append(lastSection!)
+
+		if distance > 200 {
+			self.priceAfterLongDistanceDiscount = 200 * 1.2 + (distance - 200) * 0.9
+			self.priceAfterLongDistanceAndDailyDiscount = self.priceAfterLongDistanceDiscount - 20 * 1.2;
+		} else if distance > 20 {
+			self.priceAfterDailyDiscount = (distance - 20) * 1.2
+		}
+
+		self.priceAfterHolidayDiscount = self.distance * 0.9
 	}
 
 	var description: String {
