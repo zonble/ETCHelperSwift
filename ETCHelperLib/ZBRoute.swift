@@ -40,8 +40,9 @@ class ZBRoute {
 		}
 		self.sections.append(lastSection!)
 
-		if distance > 200 {
-			self.priceAfterLongDistanceDiscount = 200 * 1.2 + (distance - 200) * 0.9
+		if self.price > 240 {
+//			self.priceAfterLongDistanceDiscount = 200 * 1.2 + (distance - 200) * 0.9
+			self.priceAfterLongDistanceDiscount = (self.price - 240) * 0.75 + 240
 			self.priceAfterLongDistanceAndDailyDiscount = self.priceAfterLongDistanceDiscount - 20 * 1.2;
 		} else if distance > 20 {
 			self.priceAfterDailyDiscount = (distance - 20) * 1.2

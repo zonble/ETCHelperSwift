@@ -49,10 +49,10 @@ class ZBRootViewController: UITableViewController, ZBFreewayTableViewControllerD
 		cell.textLabel.textAlignment = .Left
 		switch indexPath.section {
 		case 0:
-			cell.textLabel.text = self.from != nil ? self.from!.name : "Not Set Yet"
+			cell.textLabel.text = self.from?.name ?? "Not Set Yet"
 			cell.accessoryType = .DisclosureIndicator
 		case 1:
-			cell.textLabel.text = self.to != nil ? self.to!.name : "Not Set Yet"
+			cell.textLabel.text = self.to?.name ?? "Not Set Yet"
 			cell.accessoryType = .DisclosureIndicator
 		case 2:
 			cell.textLabel.text = "Go!"

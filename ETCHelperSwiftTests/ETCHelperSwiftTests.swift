@@ -34,7 +34,8 @@ class ETCHelperSwiftTests: XCTestCase {
 		self.manager.nodes.keys
 		var fromKey :NSString = (self.manager.nodes as NSDictionary).allKeys[rand1] as NSString
 		var toKey :NSString = (self.manager.nodes as NSDictionary).allKeys[rand2] as NSString
-		var routes = self.manager.possibleRoutes(from: fromKey, to: toKey, error: nil)
+		var error: NSError?
+		var routes = self.manager.possibleRoutes(from: fromKey, to: toKey, error: &error)
 		XCTAssert(routes.count > 0, "We must have routes")
 	}
 }

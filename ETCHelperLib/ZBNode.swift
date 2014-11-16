@@ -1,7 +1,7 @@
 import Foundation
 
 /** Data object for a node. */
-class ZBNode: Hashable {
+class ZBNode :Equatable {
 	var name :String
 	var links :[ZBLink] = [ZBLink]()
 
@@ -11,10 +11,6 @@ class ZBNode: Hashable {
 
 	var description: String {
 		return "<ZBNode \(self.name)>"
-	}
-
-	var hashValue: Int {
-		return self.name.hashValue
 	}
 
 	func makeLink(#to: ZBNode, distance :Double, price :Double, holidayDistance :Double, tag :String) {
@@ -29,5 +25,5 @@ func makeLinks(#a: ZBNode, b: ZBNode, distance :Double, price: Double, holidayDi
 }
 
 func ==(lhs: ZBNode, rhs: ZBNode) -> Bool {
-	return lhs.hashValue == rhs.hashValue
+	return lhs === rhs
 }

@@ -30,6 +30,8 @@ class ZBRouteTableViewController :UITableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		currencyFormatter.numberStyle = .CurrencyStyle
+		currencyFormatter.minimumFractionDigits = 1
+		currencyFormatter.maximumFractionDigits = 1
 		let taiwanLocale = NSLocale(localeIdentifier: "zh_Hant_TW");
 		currencyFormatter.locale = taiwanLocale
 		distanceFormatter.numberFormatter.locale = taiwanLocale

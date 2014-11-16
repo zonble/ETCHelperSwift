@@ -13,10 +13,9 @@ class ZBFreewayTableViewController :UITableViewController, ZBNodesTableViewContr
 		super.viewDidLoad()
 		self.title = "Pick a Highway"
 		self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-		var manager = self.delegate?.routeManagerForFreewaysTableViewController(self)
-		if manager != nil {
+		if let manager = self.delegate?.routeManagerForFreewaysTableViewController(self) {
 			var freewayNames = [String]()
-			for freeway in manager!.freewayNodesMap.keys {
+			for freeway in manager.freewayNodesMap.keys {
 				freewayNames.append(freeway)
 			}
 			freewayNames = freewayNames.sorted {
@@ -47,16 +46,14 @@ class ZBFreewayTableViewController :UITableViewController, ZBNodesTableViewContr
 	}
 
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		var manager = self.delegate?.routeManagerForFreewaysTableViewController(self)
-		if manager == nil {
-			return
+		if let manager = self.delegate?.routeManagerForFreewaysTableViewController(self) {
+			let name = self.freewayNames![indexPath.row]
+			let controller = ZBNodesTableViewController(style: .Grouped)
+			controller.delegate = self
+			var (nodes, dist) = manager.freewayNodesMap[name]!
+			controller.nodes = nodes
+			self.navigationController?.pushViewController(controller, animated: true)
 		}
-		let name = self.freewayNames![indexPath.row]
-		let controller = ZBNodesTableViewController(style: .Grouped)
-		controller.delegate = self
-		var (nodes, dist) = manager!.freewayNodesMap[name]!
-		controller.nodes = nodes
-		self.navigationController?.pushViewController(controller, animated: true)
 	}
 
 	func close(sender :AnyObject?) {
