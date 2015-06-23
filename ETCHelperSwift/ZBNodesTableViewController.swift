@@ -14,10 +14,7 @@ class ZBNodesTableViewController :UITableViewController {
 	}
 
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		if self.nodes == nil {
-			return 0
-		}
-		return self.nodes!.count
+		return self.nodes?.count ?? 0
 	}
 
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -25,7 +22,9 @@ class ZBNodesTableViewController :UITableViewController {
 		if cell == nil {
 			cell = UITableViewCell(style: .Value1, reuseIdentifier: "Cell")
 		}
-		let node = nodes![indexPath.row]
+		guard let node = self.nodes?[indexPath.row] else {
+			return cell!
+		}
 		cell?.textLabel?.text = node.name
 		return cell!
 	}

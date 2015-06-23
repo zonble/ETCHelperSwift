@@ -82,12 +82,22 @@ class ZBRootViewController: UITableViewController, ZBFreewayTableViewControllerD
 			return
 		}
 
-		var error: NSError?
-		let routes = self.manager.possibleRoutes(from: self.from!, to: self.to!, error: &error)
-		if error != nil {
-			UIAlertView(title: error!.localizedDescription, message: "", delegate: nil, cancelButtonTitle: "Dismiss").show()
+		var routes :[ZBRoute]? = nil
+		do {
+			routes = try self.manager.possibleRoutes(from: self.from!, to: self.to!)
+		} catch ZBRouteManagerError.NoStartNode {
+			UIAlertView(title: "We cannot find the node as the start.", message: "", delegate: nil, cancelButtonTitle: "Dismiss").show()
+			return
+		} catch ZBRouteManagerError.NoEndNode {
+			UIAlertView(title: "We cannot find the node as the end.", message: "", delegate: nil, cancelButtonTitle: "Dismiss").show()
+			return
+		} catch ZBRouteManagerError.StartAndEndAreSame {
+			UIAlertView(title: "The begin and the end could not be the same.", message: "", delegate: nil, cancelButtonTitle: "Dismiss").show()
+			return
+		} catch {
 			return
 		}
+
 		let controller = ZBRoutesTableViewController(style: .Grouped)
 		controller.title = "\(self.from!.name) - \(self.to!.name)"
 		controller.routes = routes

@@ -25,17 +25,20 @@ class ETCHelperSwiftTests: XCTestCase {
 	}
 
 	func testRoutesBetweenArbitraryNames() {
-		var nodeCount :UInt32 = UInt32(self.manager.nodes.count)
-		var rand1 :Int = Int(arc4random_uniform(nodeCount))
+		let nodeCount :UInt32 = UInt32(self.manager.nodes.count)
+		let rand1 :Int = Int(arc4random_uniform(nodeCount))
 		var rand2 :Int = Int(arc4random_uniform(nodeCount))
 		while (rand2 == rand1) {
 			rand2 = Int(arc4random_uniform(nodeCount))
 		}
 		self.manager.nodes.keys
-		var fromKey :NSString = (self.manager.nodes as NSDictionary).allKeys[rand1] as! NSString
-		var toKey :NSString = (self.manager.nodes as NSDictionary).allKeys[rand2] as! NSString
-		var error: NSError?
-		var routes = self.manager.possibleRoutes(from: fromKey as String, to: toKey as String, error: &error)
-		XCTAssert(routes.count > 0, "We must have routes")
+		let fromKey :NSString = (self.manager.nodes as NSDictionary).allKeys[rand1] as! NSString
+		let toKey :NSString = (self.manager.nodes as NSDictionary).allKeys[rand2] as! NSString
+		do {
+			var routes = try self.manager.possibleRoutes(from: fromKey as String, to: toKey as String)
+			XCTAssert(routes.count > 0, "We must have routes")
+		} catch {
+			XCTFail()
+		}
 	}
 }

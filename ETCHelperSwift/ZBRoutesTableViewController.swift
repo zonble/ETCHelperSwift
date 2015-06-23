@@ -10,10 +10,7 @@ class ZBRoutesTableViewController :UITableViewController {
 	}
 
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		if self.routes == nil {
-			return 0
-		}
-		return self.routes!.count
+		return self.routes?.count ?? 0
 	}
 
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -45,7 +42,7 @@ class ZBRoutesTableViewController :UITableViewController {
 		let controller = ZBRouteTableViewController(style: .Grouped)
 		let route = self.routes![indexPath.row]
 		controller.route = route
-		let title = self.title != nil ? self.title! : ""
+		let title = self.title ?? ""
 		controller.title = "\(title) \(route.price)"
 		self.navigationController?.pushViewController(controller, animated: true)
 	}

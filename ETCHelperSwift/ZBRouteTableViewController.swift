@@ -126,10 +126,10 @@ class ZBRouteTableViewController :UITableViewController {
 			return nil
 		}
 		let linkSection = self.route!.sections[section-1]
-		if let title = linkSection["title"] as! String? {
-			return title
+		guard let title = linkSection["title"] as! String? else {
+			return nil
 		}
-		return nil
+		return title
 	}
 
 	func share(sender: AnyObject) {

@@ -1,27 +1,26 @@
 import Foundation
 
-let ZBRouteManagerErrorDomain = "ZBRouteManagerErrorDomain"
+enum ZBRouteManagerError : ErrorType {
+	case NoStartNode
+	case NoEndNode
+	case StartAndEndAreSame
+}
 
 class ZBRouteManager {
 	var nodes = [String: ZBNode]()
 	var freewayNodesMap = [String: ([ZBNode], [Double])]()
 
 	init(routingDataFileURL: NSURL) {
-		var error :NSError?
 		let text: NSString?
 		do {
 			text = try NSString(contentsOfURL: routingDataFileURL, encoding: NSUTF8StringEncoding)
-		} catch var error1 as NSError {
-			error = error1
-			text = nil
-		}
-		if error != nil {
+		} catch {
 			return
 		}
-		if text == nil {
+
+		guard let contents = text else {
 			return
 		}
-		let contents = text!
 
 		func findOrCreateNodeByName(name :String) -> ZBNode {
 			if self.nodes[name] == nil {
@@ -71,27 +70,16 @@ class ZBRouteManager {
 		}
 	}
 
-	func possibleRoutes(from from :ZBNode, to :ZBNode, error: NSErrorPointer) -> [ZBRoute] {
+	func possibleRoutes(from from :ZBNode, to :ZBNode) throws -> [ZBRoute] {
 
-		if self.nodes[from.name] == nil {
-			error.memory = NSError(domain: ZBRouteManagerErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "We do not have the node as the start."])
-			return []
+		if self.nodes[from.name] == nil || self.nodes[from.name] != from {
+			throw ZBRouteManagerError.NoStartNode
 		}
-		if self.nodes[from.name] != from {
-			error.memory = NSError(domain: ZBRouteManagerErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "We do not have the node as the start."])
-			return []
-		}
-		if self.nodes[to.name] == nil {
-			error.memory = NSError(domain: ZBRouteManagerErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "We do not have the node as the destination."])
-			return []
-		}
-		if self.nodes[to.name] != to {
-			error.memory = NSError(domain: ZBRouteManagerErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "We do not have the node as the destination."])
-			return []
+		if self.nodes[to.name] == nil || self.nodes[to.name] != to {
+			throw ZBRouteManagerError.NoEndNode
 		}
 		if from == to {
-			error.memory = NSError(domain: ZBRouteManagerErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "We do not have the node as the destination."])
-			return []
+			throw ZBRouteManagerError.StartAndEndAreSame
 		}
 
 		let traveler = ZBRouteTraveler(from: from, to: to)
@@ -102,21 +90,17 @@ class ZBRouteManager {
 		return routes
 	}
 
-	func possibleRoutes(from from :String, to :String, error: NSErrorPointer) -> [ZBRoute] {
+	func possibleRoutes(from from :String, to :String) throws -> [ZBRoute] {
 		func nodeWithName(name: String) -> ZBNode? {
 			return self.nodes[name]
 		}
-		let fromNode = nodeWithName(from)
-		if fromNode == nil {
-			error.memory = NSError(domain: ZBRouteManagerErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "We cannot find the node to start."])
-			return []
+		guard let fromNode = nodeWithName(from) else {
+			throw ZBRouteManagerError.NoStartNode
 		}
-		let toNode = nodeWithName(to)
-		if toNode == nil {
-			error.memory = NSError(domain: ZBRouteManagerErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "We cannot find the destination node."])
-			return []
+		guard let toNode = nodeWithName(to) else {
+			throw ZBRouteManagerError.NoEndNode
 		}
-		return self.possibleRoutes(from: fromNode!, to: toNode!, error: error)
+		return try self.possibleRoutes(from: fromNode, to: toNode)
 	}
 }
 
