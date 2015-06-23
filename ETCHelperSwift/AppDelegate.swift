@@ -6,7 +6,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var splitViewController :UISplitViewController?
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
-		var rootVC = ZBRootViewController(style: .Grouped)
+		let rootVC = ZBRootViewController(style: .Grouped)
 		splitViewController = UISplitViewController()
 		if splitViewController!.traitCollection.horizontalSizeClass == .Regular {
 			splitViewController!.viewControllers = [UINavigationController(rootViewController: rootVC), UIViewController()]

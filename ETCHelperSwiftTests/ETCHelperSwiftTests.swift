@@ -6,8 +6,8 @@ class ETCHelperSwiftTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-		var bundle = NSBundle(forClass: ETCHelperSwiftTests.self)
-		var fileURL = bundle.URLForResource("data", withExtension: "txt")
+		let bundle = NSBundle(forClass: ETCHelperSwiftTests.self)
+		let fileURL = bundle.URLForResource("data", withExtension: "txt")
 		self.manager = ZBRouteManager(routingDataFileURL: fileURL!)
     }
     
@@ -18,7 +18,7 @@ class ETCHelperSwiftTests: XCTestCase {
 	func testAllNodes() {
 		XCTAssert(self.manager.nodes.count > 0, "Must have nodes")
 		for key in self.manager.nodes.keys {
-			var node = self.manager.nodes[key]!
+			let node = self.manager.nodes[key]!
 			XCTAssert((node.name as NSString).length > 0, "Must have names")
 			XCTAssert(node.links.count > 0, "Must have links")
 		}
@@ -32,10 +32,10 @@ class ETCHelperSwiftTests: XCTestCase {
 			rand2 = Int(arc4random_uniform(nodeCount))
 		}
 		self.manager.nodes.keys
-		var fromKey :NSString = (self.manager.nodes as NSDictionary).allKeys[rand1] as NSString
-		var toKey :NSString = (self.manager.nodes as NSDictionary).allKeys[rand2] as NSString
+		var fromKey :NSString = (self.manager.nodes as NSDictionary).allKeys[rand1] as! NSString
+		var toKey :NSString = (self.manager.nodes as NSDictionary).allKeys[rand2] as! NSString
 		var error: NSError?
-		var routes = self.manager.possibleRoutes(from: fromKey, to: toKey, error: &error)
+		var routes = self.manager.possibleRoutes(from: fromKey as String, to: toKey as String, error: &error)
 		XCTAssert(routes.count > 0, "We must have routes")
 	}
 }

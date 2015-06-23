@@ -8,7 +8,13 @@ class ZBRouteManager {
 
 	init(routingDataFileURL: NSURL) {
 		var error :NSError?
-		let text: NSString? = NSString(contentsOfURL: routingDataFileURL, encoding: NSUTF8StringEncoding, error: &error)
+		let text: NSString?
+		do {
+			text = try NSString(contentsOfURL: routingDataFileURL, encoding: NSUTF8StringEncoding)
+		} catch var error1 as NSError {
+			error = error1
+			text = nil
+		}
 		if error != nil {
 			return
 		}
@@ -29,8 +35,10 @@ class ZBRouteManager {
 			if !line.hasPrefix("|") || line.hasPrefix("|--") || line.hasPrefix("| #"){
 				continue
 			}
-			let textComponents = line.componentsSeparatedByString("|") as [String]
-			var components = map(textComponents, {($0 as NSString).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())})
+			let textComponents = line.componentsSeparatedByString("|")
+			var components = textComponents.map {
+				($0 as NSString).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+			}
 			components = components.filter({($0 as NSString).length > 0})
 			if components.count != 6 {
 				continue
@@ -42,7 +50,7 @@ class ZBRouteManager {
 			let distance = (components[3] as NSString).doubleValue
 			let price = (components[4] as NSString).doubleValue
 			let holidayDistance = (components[5] as NSString).doubleValue
-			makeLinks(a: from, to, distance, price, holidayDistance, tag)
+			makeLinks(a: from, b: to, distance: distance, price: price, holidayDistance: holidayDistance, tag: tag)
 
 			var freewayNodes :[ZBNode] = [ZBNode]()
 			var freewayDistance :[Double] = [Double]()
@@ -51,10 +59,10 @@ class ZBRouteManager {
 			} else {
 				freewayDistance.append(0)
 			}
-			if !contains(freewayNodes, from) {
+			if !freewayNodes.contains(from) {
 				freewayNodes.append(from)
 			}
-			if !contains(freewayNodes, to) {
+			if !freewayNodes.contains(to) {
 				freewayNodes.append(to)
 			}
 			freewayDistance.append(freewayDistance.last! + holidayDistance)
@@ -62,7 +70,7 @@ class ZBRouteManager {
 		}
 	}
 
-	func possibleRoutes(#from :ZBNode, to :ZBNode, error: NSErrorPointer) -> [ZBRoute] {
+	func possibleRoutes(from from :ZBNode, to :ZBNode, error: NSErrorPointer) -> [ZBRoute] {
 
 		if self.nodes[from.name] == nil {
 			error.memory = NSError(domain: ZBRouteManagerErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "We do not have the node as the start."])
@@ -85,24 +93,24 @@ class ZBRouteManager {
 			return []
 		}
 
-		var traveler = ZBRouteTraveler(from: from, to: to)
+		let traveler = ZBRouteTraveler(from: from, to: to)
 		var routes = traveler.routes
-		routes = routes.sorted { (a: ZBRoute, b: ZBRoute) -> Bool in
+		routes = routes.sort { (a: ZBRoute, b: ZBRoute) -> Bool in
 			return a.price < b.price
 		}
 		return routes
 	}
 
-	func possibleRoutes(#from :String, to :String, error: NSErrorPointer) -> [ZBRoute] {
+	func possibleRoutes(from from :String, to :String, error: NSErrorPointer) -> [ZBRoute] {
 		func nodeWithName(name: String) -> ZBNode? {
 			return self.nodes[name]
 		}
-		var fromNode = nodeWithName(from)
+		let fromNode = nodeWithName(from)
 		if fromNode == nil {
 			error.memory = NSError(domain: ZBRouteManagerErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "We cannot find the node to start."])
 			return []
 		}
-		var toNode = nodeWithName(to)
+		let toNode = nodeWithName(to)
 		if toNode == nil {
 			error.memory = NSError(domain: ZBRouteManagerErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "We cannot find the destination node."])
 			return []
@@ -128,7 +136,7 @@ class ZBRouteTraveler {
 
 	func travelLinksForNode(node :ZBNode) -> Void {
 		for link in node.links {
-			var linkTo = link.to
+			let linkTo = link.to
 			if linkTo == to {
 				var copy = visitedLinks
 				copy.append(link)
@@ -136,7 +144,7 @@ class ZBRouteTraveler {
 				routes.append(route)
 				continue
 			}
-			if contains(visitedNodes, linkTo) {
+			if visitedNodes.contains(linkTo) {
 				continue
 			}
 

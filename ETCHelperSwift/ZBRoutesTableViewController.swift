@@ -5,7 +5,7 @@ class ZBRoutesTableViewController :UITableViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		var backItem = UIBarButtonItem(title: "", style: .Bordered, target: nil, action: nil)
+		let backItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
 		self.navigationItem.backBarButtonItem = backItem
 	}
 
@@ -17,20 +17,20 @@ class ZBRoutesTableViewController :UITableViewController {
 	}
 
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		var cell :UITableViewCell? = tableView.dequeueReusableCellWithIdentifier("Cell") as? UITableViewCell
+		var cell :UITableViewCell? = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell?
 		if cell == nil {
 			cell = UITableViewCell(style: .Subtitle, reuseIdentifier: "Cell")
 		}
 		var route = self.routes![indexPath.row]
-		cell!.textLabel.text = "\(route.price)"
+		cell?.textLabel?.text = "\(route.price)"
 
 		func titleFromRoute(route:ZBRoute) -> String {
 			var s :String = route.beginNode.name
-			var sections = route.sections
+			let sections = route.sections
 			for section in sections {
-				var title = section["title"]! as String
-				var links = section["links"]! as [ZBLink]
-				var link = links.last
+				let title = section["title"]! as! String
+				let links = section["links"]! as! [ZBLink]
+				let link = links.last
 				s += "-\(title)-\(link!.to.name)"
 			}
 			return s
@@ -42,10 +42,10 @@ class ZBRoutesTableViewController :UITableViewController {
 	}
 
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		var controller = ZBRouteTableViewController(style: .Grouped)
-		var route = self.routes![indexPath.row]
+		let controller = ZBRouteTableViewController(style: .Grouped)
+		let route = self.routes![indexPath.row]
 		controller.route = route
-		var title = self.title != nil ? self.title! : ""
+		let title = self.title != nil ? self.title! : ""
 		controller.title = "\(title) \(route.price)"
 		self.navigationController?.pushViewController(controller, animated: true)
 	}

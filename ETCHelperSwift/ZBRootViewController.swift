@@ -32,7 +32,7 @@ class ZBRootViewController: UITableViewController, ZBFreewayTableViewControllerD
 		super.viewDidLoad()
 		self.title = "ETC Helper"
 		self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-		var backItem = UIBarButtonItem(title: "", style: .Bordered, target: nil, action: nil)
+		let backItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
 		self.navigationItem.backBarButtonItem = backItem
 	}
 
@@ -44,21 +44,21 @@ class ZBRootViewController: UITableViewController, ZBFreewayTableViewControllerD
 	}
 
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell
-		cell.textLabel.textColor = UIColor.blackColor()
-		cell.textLabel.textAlignment = .Left
+		let cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell!
+		cell.textLabel?.textColor = UIColor.blackColor()
+		cell.textLabel?.textAlignment = .Left
 		switch indexPath.section {
 		case 0:
-			cell.textLabel.text = self.from?.name ?? "Not Set Yet"
+			cell.textLabel?.text = self.from?.name ?? "Not Set Yet"
 			cell.accessoryType = .DisclosureIndicator
 		case 1:
-			cell.textLabel.text = self.to?.name ?? "Not Set Yet"
+			cell.textLabel?.text = self.to?.name ?? "Not Set Yet"
 			cell.accessoryType = .DisclosureIndicator
 		case 2:
-			cell.textLabel.text = "Go!"
+			cell.textLabel?.text = "Go!"
 			cell.accessoryType = .None
-			cell.textLabel.textColor = UIColor.blueColor()
-			cell.textLabel.textAlignment = .Center
+			cell.textLabel?.textColor = UIColor.blueColor()
+			cell.textLabel?.textAlignment = .Center
 		default:
 			break
 		}
@@ -83,7 +83,7 @@ class ZBRootViewController: UITableViewController, ZBFreewayTableViewControllerD
 		}
 
 		var error: NSError?
-		var routes = self.manager.possibleRoutes(from: self.from!, to: self.to!, error: &error)
+		let routes = self.manager.possibleRoutes(from: self.from!, to: self.to!, error: &error)
 		if error != nil {
 			UIAlertView(title: error!.localizedDescription, message: "", delegate: nil, cancelButtonTitle: "Dismiss").show()
 			return
@@ -91,7 +91,7 @@ class ZBRootViewController: UITableViewController, ZBFreewayTableViewControllerD
 		let controller = ZBRoutesTableViewController(style: .Grouped)
 		controller.title = "\(self.from!.name) - \(self.to!.name)"
 		controller.routes = routes
-		var appDelegate :AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+		let appDelegate :AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 		appDelegate.splitViewController!.showDetailViewController(UINavigationController(rootViewController: controller), sender: self)
 	}
 
@@ -99,10 +99,10 @@ class ZBRootViewController: UITableViewController, ZBFreewayTableViewControllerD
 		tableView.deselectRowAtIndexPath(indexPath, animated: true)
 
 		func presentViewController(vc :UIViewController) {
-			var nav = UINavigationController(rootViewController: vc)
+			let nav = UINavigationController(rootViewController: vc)
 			nav.preferredContentSize = CGSizeMake(320, 600)
 			nav.modalPresentationStyle = UIModalPresentationStyle.Popover
-			var cell = tableView.cellForRowAtIndexPath(indexPath)
+			let cell = tableView.cellForRowAtIndexPath(indexPath)
 			nav.popoverPresentationController!.sourceView = cell!
 			nav.popoverPresentationController!.sourceRect = cell!.bounds
 			self.presentViewController(nav, animated: true, completion: nil)

@@ -3,8 +3,8 @@ import Foundation
 extension ZBRoute {
 	var plainTextReport : String {
 		get {
-			var currencyFormatter = NSNumberFormatter()
-			var distanceFormatter = NSLengthFormatter()
+			let currencyFormatter = NSNumberFormatter()
+			let distanceFormatter = NSLengthFormatter()
 			let taiwanLocale = NSLocale(localeIdentifier: "zh_Hant_TW");
 			currencyFormatter.numberStyle = .CurrencyStyle
 			currencyFormatter.locale = taiwanLocale
@@ -24,10 +24,10 @@ extension ZBRoute {
 
 			var sectionIndex = 0
 			for section in self.sections {
-				let title = section["title"]! as NSString
+				let title = section["title"]! as! NSString
 				s += "== \(title) ==\n"
 
-				let links = section["links"]! as [ZBLink]
+				let links = section["links"]! as! [ZBLink]
 				var rowIndex = 0
 				for link in links {
 					var previousNode : ZBNode!
@@ -36,7 +36,7 @@ extension ZBRoute {
 							previousNode = self.beginNode
 						} else {
 							let lastLinkSection = self.sections[sectionIndex - 1]
-							let lastLinks = lastLinkSection["links"]! as [ZBLink]
+							let lastLinks = lastLinkSection["links"]! as! [ZBLink]
 							previousNode = lastLinks[lastLinks.count-1].to
 						}
 					} else {

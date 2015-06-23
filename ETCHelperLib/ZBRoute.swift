@@ -32,7 +32,7 @@ class ZBRoute {
 				sectionLinks.append(link)
 				lastSection?["links"] = sectionLinks
 			} else {
-				var sectionLinks :[ZBLink] = lastSection!["links"]! as [ZBLink]
+				var sectionLinks :[ZBLink] = lastSection!["links"]! as! [ZBLink]
 				sectionLinks.append(link)
 				lastSection!["links"] = sectionLinks
 			}

@@ -21,17 +21,17 @@ class ZBNodesTableViewController :UITableViewController {
 	}
 
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		var cell :UITableViewCell? = tableView.dequeueReusableCellWithIdentifier("Cell") as? UITableViewCell
+		var cell :UITableViewCell? = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell?
 		if cell == nil {
 			cell = UITableViewCell(style: .Value1, reuseIdentifier: "Cell")
 		}
-		var node = nodes![indexPath.row]
-		cell!.textLabel.text = node.name
+		let node = nodes![indexPath.row]
+		cell?.textLabel?.text = node.name
 		return cell!
 	}
 
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		var node = nodes![indexPath.row]
+		let node = nodes![indexPath.row]
 		delegate?.nodesTableViewController(self, didSelectNode: node)
 		self.navigationController?.popViewControllerAnimated(true)
 	}

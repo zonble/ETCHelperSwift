@@ -196,6 +196,7 @@
 		D4C7A00619F38A2400FBD0D6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = "Weizhong Yang";
 				TargetAttributes = {
