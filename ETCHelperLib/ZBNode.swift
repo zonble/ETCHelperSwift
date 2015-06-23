@@ -19,7 +19,7 @@ class ZBNode :Equatable {
 	}
 }
 
-func makeLinks(a a: ZBNode, b: ZBNode, distance :Double, price: Double, holidayDistance :Double, tag: NSString) {
+func makeLinks(a a: ZBNode, b: ZBNode, distance :Double, price: Double, holidayDistance :Double, tag: String) {
 	a.makeLink(to: b, distance: distance, price: price, holidayDistance: holidayDistance, tag: tag as String)
 	b.makeLink(to: a, distance: distance, price: price, holidayDistance: holidayDistance, tag: tag as String)
 }

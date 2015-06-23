@@ -36,10 +36,11 @@ class ZBRouteManager {
 				continue
 			}
 			let textComponents = line.componentsSeparatedByString("|")
-			var components = textComponents.map {
-				($0 as NSString).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-			}
-			components = components.filter({($0 as NSString).length > 0})
+			let components :[String] = textComponents.map {
+					($0 as NSString).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+				} .filter {
+					($0 as NSString).length > 0
+				}
 			if components.count != 6 {
 				continue
 			}

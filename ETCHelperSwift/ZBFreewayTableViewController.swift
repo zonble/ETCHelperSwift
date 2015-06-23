@@ -17,24 +17,20 @@ class ZBFreewayTableViewController :UITableViewController, ZBNodesTableViewContr
 		self.navigationItem.leftBarButtonItem = item
 		self.tableView.rowHeight = 60;
 
-		guard let manager = self.delegate?.routeManagerForFreewaysTableViewController(self) else {
-			return
-		}
+		guard let manager = self.delegate?.routeManagerForFreewaysTableViewController(self) else { return }
 		var freewayNames = [String]()
 		for freeway in manager.freewayNodesMap.keys {
 			freewayNames.append(freeway)
 		}
-		freewayNames = freewayNames.sort {
-			return $0 < $1
-		}
+		freewayNames = freewayNames.sort { $0 < $1 }
 		self.freewayNames = freewayNames
 	}
 
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		if self.freewayNames == nil {
+		guard let names = self.freewayNames else {
 			return 0
 		}
-		return self.freewayNames!.count
+		return names.count
 	}
 
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -53,7 +49,9 @@ class ZBFreewayTableViewController :UITableViewController, ZBNodesTableViewContr
 		let name = self.freewayNames![indexPath.row]
 		let controller = ZBNodesTableViewController(style: .Grouped)
 		controller.delegate = self
-		let (nodes, _) = manager.freewayNodesMap[name]!
+		guard let (nodes, _) = manager.freewayNodesMap[name] else {
+			return
+		}
 		controller.nodes = nodes
 		self.navigationController?.pushViewController(controller, animated: true)
 	}
